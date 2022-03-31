@@ -22,11 +22,9 @@ exclude:
   - LICENSE.md
   - README.md
 
-sass:
-  sass_dir: _sass
-  style: :compressed
-
 # Options
+theme: jekyll-text-theme
+
 
 # Replace this value and uncomment to enable Google Analytics tracking
 # ga_analytics: UA-000000-0
@@ -38,4 +36,4 @@ author:
   email: hanghur@gmail.com
 
 # Custom vars
-version: 0.1.0
+# version: 0.1.0
