@@ -28,6 +28,9 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  jwhhh
 linkedin_username: jwhhh
 
+timezone: Australia/Sydney
+repository: jwhhh/jwhhh.github.io
+
 # Build settings
 theme: jekyll-text-theme
 text_skin: ocean
