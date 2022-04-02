@@ -30,6 +30,9 @@ linkedin_username: jwhhh
 
 timezone: Australia/Sydney
 repository: jwhhh/jwhhh.github.io
+license: CC-BY-NC-4.0
+
+paginate: 8
 
 # Build settings
 theme: jekyll-text-theme
