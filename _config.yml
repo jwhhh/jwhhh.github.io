@@ -36,7 +36,7 @@ paginate: 8
 
 # Build settings
 theme: jekyll-text-theme
-text_skin: ocean
+text_skin: my_own_skin
 plugins:
   - jekyll-feed
 
