@@ -18,27 +18,69 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
+## => Site Settings
 title: Jw's
 email: hanghur@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Random notes/thoughts on programming, machine learning, ethics and more.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-# twitter_username: jekyllrb
-github_username:  jwhhh
-linkedin_username: jwhhh
+url: "jwhhh.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
+
+## => Language and Timezone
+lang: en
 timezone: Australia/Sydney
 repository: jwhhh/jwhhh.github.io
 license: CC-BY-NC-4.0
 
-paginate: 8
 
-# Build settings
+## => Author and Social
+Jiawen:
+  name      : Jiawen
+  url       : https://jwhhh.github.io
+  avatar    : assets/apple-touch-icon.png
+  # bio       : 
+  email     : hanghur@gmail.com
+  # douban    : # "user_name" the last part of your profile url, e.g. https://www.douban.com/people/user_name
+  linkedin  : jwhhh
+  github    : jwhhh
+
+
+## => GitHub Repository
+repository: jwhhh/jwhhh.github.io
+repository_tree: main
+
+
+## => Markdown Enhancements
+mathjax: true
+mathjax_autoNumber: false
+# mermaid: true
+# chart: true
+
+
+## => Poginate
+paginate: 8
+paginate_path: /test/page:num
+
+
+## => Search
+search:
+  provider: default
+
+
+## => Build settings
 theme: jekyll-text-theme
 text_skin: my_own_skin
+
+
+## => Plugins
 plugins:
   - jekyll-feed
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jemoji
+
+data_dir: /_data
 
 # Exclude from processing.
 # The following items will not be processed, by default.
