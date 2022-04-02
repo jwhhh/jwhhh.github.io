@@ -29,7 +29,8 @@ github_username:  jwhhh
 linkedin_username: jwhhh
 
 # Build settings
-theme: minima
+theme: jekyll-text-theme
+text_skin: ocean
 plugins:
   - jekyll-feed
 
