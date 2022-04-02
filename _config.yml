@@ -25,6 +25,8 @@ description: >- # this means to ignore newlines until "baseurl:"
   Random notes/thoughts on programming, machine learning, ethics and more.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "jwhhh.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+theme: jekyll-text-theme
+text_skin: my_own_skin
 
 
 ## => Language and Timezone
@@ -35,7 +37,7 @@ license: CC-BY-NC-4.0
 
 
 ## => Author and Social
-Jiawen:
+author:
   name      : Jiawen
   url       : https://jwhhh.github.io
   avatar    : assets/apple-touch-icon.png
@@ -63,14 +65,23 @@ paginate: 8
 paginate_path: /test/page:num
 
 
+## => Build
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: article
+      sharing: false
+      # license: true
+      aside:
+        toc: true
+      # pageview: true
+
+
 ## => Search
 search:
   provider: default
-
-
-## => Build settings
-theme: jekyll-text-theme
-text_skin: my_own_skin
 
 
 ## => Plugins
