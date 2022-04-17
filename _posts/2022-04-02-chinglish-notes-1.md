@@ -4,3 +4,21 @@ tags: books English-learning
 layout: article
 ---
 
+# 1. Unnecessary words
+
+> Unnecessary words are the hallmark of Chinglish.
+
+## I. Unnecesary nouns and verbs
+
+### Nouns
+- to accelerate = to increase the pace of
+  - 例句中说"to accelerate the pace of"，这第一点非常像我们说“凯旋归来”时犯的错误
+- "situation" is a particularly dangerous noun; "key" can also sometimes be unnecessary
+- category nouns, e.g. "the work of", "the cause of", "a relationship of", "the practice of", "cases of", "the factor of"
+
+### Verbs
+1. unnecessary verb + noun
+  - e.g. "make an improvement" -> "improve", "accomplish the transform" -> "transform", "launch an attack" -> "attack", "realises industrial modernisation" -> "modernises"
+  - passive voice, e.g. "an improvement must be made" -> "must be improved", "approval should be given" -> "should be improved", "solutions can be found" -> "can be solved"
+
+2. unnecessary verb + unnecessary noun + third word
