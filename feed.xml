@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="jwhhh.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="jwhhh.github.io/" rel="alternate" type="text/html" hreflang="en" /><updated>2022-06-08T10:01:09+10:00</updated><id>jwhhh.github.io/feed.xml</id><title type="html">Jw’s</title><subtitle>random notes/thoughts on programming, machine learning, ethics and more.</subtitle><author><name>Jiawen</name><email>hanghur@gmail.com</email></author><entry><title type="html">ML foundations - decision theory</title><link href="jwhhh.github.io/2022/05/22/bishop-3.html" rel="alternate" type="text/html" title="ML foundations - decision theory" /><published>2022-05-22T00:00:00+10:00</published><updated>2022-05-22T00:00:00+10:00</updated><id>jwhhh.github.io/2022/05/22/bishop-3</id><content type="html" xml:base="jwhhh.github.io/2022/05/22/bishop-3.html"><![CDATA[<p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.5</p>
+
+<h1 id="decision-theory">Decision theory</h1>
+
+<h2 id="basic-concepts">Basic concepts</h2>
+
+<p>Consider an input vector x, corresponding target variables t, with our goal to predict t given a new value for x.</p>
+
+<p>The joint probability distribution $p(\textbf{x},\textbf{t})$ provides a complete summary
+of the uncertainty associated with these variables. Determination of $p(\textbf{x},\textbf{t})$ from a set of training data is an example of <strong>inference</strong>.</p>
+
+<p>In a practical application, we must often make a specific prediction for the value of $\textbf{t}$, or more generally take a specific action based on our understanding of the values $\textbf{t}$ is likely to take, and this aspect is the subject of <strong>decision theory</strong>.</p>
+
+<ul>
+  <li><strong>Decision regions</strong>: regions $R_k$ that are divided from the input space according to some rules</li>
+  <li><strong>Decision boundaries</strong> (or <strong>decision surfaces</strong>): the boundaries between decision regions</li>
+</ul>
+
+<h2 id="how">How?</h2>
+
+<h3 id="minimising-the-misclassification-rate">Minimising the misclassification rate:</h3>
+
+\[p(\text{mistake}) = p(\textbf{x}\in \mathcal{R}_1, \mathcal{C}_2) + p(\textbf{x}\in \mathcal{R}_2, \mathcal{C}_1)\\
+=\int_{\mathcal{R}_1} p(\mathbf{x},\mathcal{C}_2)d\mathbf{x} + \int_{\mathcal{R}_2} p(\mathbf{x},\mathcal{C}_1)d\mathbf{x}\]
+
+<p>Or, maximising the probability of being correct:</p>
+
+\[p(\text{correct}) = \sum_{k=1}^K p(\mathbf{x}\in \mathcal{R}_k, \mathcal{C}_k)\\
+= \sum_{k=1}^K \int_{\mathcal{R}_k} p(\mathbf{x},\mathcal{C}_k)d\mathbf{x}\]
+
+<p>The above two are both equivalent to maximising the posterior probability 
+$p(\mathcal{C}_k|\mathbf{x})$.</p>
+
+<h3 id="minimising-the-expected-loss">Minimising the expected loss</h3>
+
+<p><strong>loss function</strong> / <strong>cost function</strong>: a single, overall measure of loss
+incurred in taking any of the available decisions or actions. Our goal is 
+to minimise it.</p>
+
+<p><strong>utility function</strong> (alternatively): a similar evaluation, which is aimed
+to maximise.</p>
+
+<p><strong>loss matrix</strong>: we denote some level of loss $L_{kj}$ as the $k$, $j$ 
+element of the loss matrix.</p>
+
+<p>We seek to minimise the average loss, where the average is computed with
+respect to the joint distribution ($p(\textbf{x}, \mathcal{C}_k)$),</p>
+
+\[\mathbb{E}[L] = \sum_k \sum_j \int_{\mathcal{R}_j} L_{kj} p(\mathbf{x},\mathcal{C}_k)d\mathbf{x}\]
+
+<p>Our goal is to choose the regions $\mathcal{R}_j$ that minimise the expected
+loss above. And this can then be eliminated to the problem of minimising the 
+quantity</p>
+
+\[\sum_k L_{kj} p(\mathcal{C}_k|\mathbf{x})\]
+
+<h2 id="reject-option">Reject option</h2>
+
+<p>It’s appropriate to avoid making decisions on the difficult cases. So such
+a mechanism “reject option” is necessary. This can be achieved by 
+introducing a threshdld $\theta$ and rejecting those inputs $\mathbf{x}$ for
+which the largest of the posterior probabilities 
+$p(\mathcal{C}_k|\mathbf{x})$ is less than or equal to $\theta$.</p>]]></content><author><name>Jiawen</name><email>hanghur@gmail.com</email></author><category term="machine-learning" /><summary type="html"><![CDATA[Reference: Bishop 1.5]]></summary></entry><entry><title type="html">ML foundations - probability theory, maximum likelihood</title><link href="jwhhh.github.io/2022/04/22/bishop-2.html" rel="alternate" type="text/html" title="ML foundations - probability theory, maximum likelihood" /><published>2022-04-22T00:00:00+10:00</published><updated>2022-04-22T00:00:00+10:00</updated><id>jwhhh.github.io/2022/04/22/bishop-2</id><content type="html" xml:base="jwhhh.github.io/2022/04/22/bishop-2.html"><![CDATA[<p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.2</p>
+
+<h1 id="probability-theory">Probability theory</h1>
+
+<blockquote>
+  <p>Probability provides a consistent framework for the quantification and manipulation of uncertainty and forms one of
+the central foundations for pattern recognition.</p>
+</blockquote>
+
+<h2 id="densities">Densities</h2>
+
+<h3 id="discrete-variables">Discrete variables</h3>
+<p>(skipping quick intro of <em>probability</em>, <em>sum rule</em>, <em>product rule</em>, <em>joint probability</em>, <em>marginal probability</em>, 
+<em>conditional probability</em>, <em>Bayes’ theorem</em>, <em>prior probability</em>, <em>posterior probability</em>, <em>independent</em>)</p>
+
+<p>Note that if $x$ is a discrete variable, then $p(x)$ is sometimes called a <strong><em>probability mass function</em></strong> because
+it can be regarded as a set of “probability masses” concentrated at the allowed values of $x$.</p>
+
+<h3 id="continuous-variables">Continuous variables</h3>
+
+<p>If a probability of a real-valued variable $x$ falling in the interval $(x, x+\delta x)$ is given by $p(x)\delta x$ for 
+$\delta x \rightarrow 0$, then $p(x)$ is called the <strong><em>probability density</em></strong> over $x$.</p>
+
+<p>The probability that $x$ will lie in an interval $(a,b)$ is then given by</p>
+
+\[p(x\in (a,b)) = \int_a^b p(x) dx\]
+
+<p>The cummulative distribution function is defined by the probability that $x$ lies in the interval $(-\infty,z)$:</p>
+
+\[P(z) = \int_{-\infty}^z p(x) dx\]
+
+<p>which satisfies $P’(x) = p(x)$.</p>
+
+<p>The sum and product rules of probability, as well as Bayes’ theorem, apply equally to the case of probability densities,
+or to combinations of discrete and continuous variables.</p>
+
+<h4 id="nonlinear-change-of-variable">nonlinear change of variable</h4>
+<p>Under a <em>nonlinear change of variable</em>, a probability density transforms differently from a simple function, due to the
+Jacobian factor. For instance, if we consider a chnage of variables $x=g(y)$, then a function $f(x)$ becomes
+$\tilde{f}(y)=f(g(y))$. Now consider a probability density $p_x(x)$ that corresponds to a density $p_y(y)$ with respect
+to the new variable $y$, where the suffices denote the fact that $p_x(x)$ and $p_y(y)$ are different densities.
+Observations falling in the range $(x,x+\delta x)$ will, for small values of $\delta x$, be transformed into the range
+$(y,y+\delta y)$ where $p_x(x)\delta x \simeq p_y(y)\delta y$, and hence</p>
+
+\[p_y(y) = p_x(x)|\frac{dx}{dy}| = p_x(g(y))|g'(y)|\]
+
+<p>One consequence of this property is that the concept of the maximum of a probability density is dependent on the choice 
+of variable.</p>
+
+<h2 id="e--cov">E &amp; cov</h2>
+
+<p>For a discrete distribution, $\mathbb{E}[f]=\sum_x p(x)f(x)$.</p>
+
+<p>For a continuous distribution, $\mathbb{E}[f]=\int p(x)f(x)dx$.</p>
+
+<p>In either case, if we are given a finite number $N$ of points drawn from the probability distribution or probability density,
+then the expectation can be approximated as a finite sum over these points, 
+$\mathbb{E}[f]\simeq \frac{1}{N}\sum_{n=1}^N f(x_n)$.</p>
+
+<p>$\mathbb{E}_x[f(x,y)]$ denotes the average of the function $f(x,y)$ with respect to the distribution of $x$.
+Note that this will be a function of $y$.</p>
+
+<p>For <em>conditional expectation</em>, $\mathbb{E}_x[f|y]=\sum_x p(x|y)f(x)$ for discrete variables, 
+and $\mathbb{E}_x[f|y]=\int_x p(x|y)f(x)$ for continuous variables.</p>
+
+<p>The <strong><em>variance</em></strong> of $f(x)$ is defined by</p>
+
+\[\begin{aligned}
+var[f] &amp;= \mathbb{E}[(f(x)-\mathbb[f(x)])^2] \\
+&amp;= \mathbb{E}[f(x)^2] - \mathbb{E}[f(x)]^2
+\end{aligned}\]
+
+<p>and provides a measure of how much variability there is in $f(x)$ around its mean value $\mathbb{E}[f(x)]$.</p>
+
+<p>If we consider the variance of the variable $x$ itself, then it’s $var[x]=\mathbb{E}[x^2]-\mathbb{E}[x]^2$.</p>
+
+<p>For two random variables $x$ and $y$, the <strong><em>covariance</em></strong> is defined by</p>
+
+\[\begin{aligned}
+cov[x,y] &amp;= \mathbb{E}_{x,y} [\{x-\mathbb{E}[x]\} \{y-\mathbb{E}[y]\}]\\
+&amp;= \mathbb{E}[xy]-\mathbb{E}[x]\mathbb{E}[y]
+\end{aligned}\]
+
+<p>which expresses the extent to which $x$ and $y$ vary together. If $x$ and $y$ are independent, then their covariance vanishes.</p>
+
+<p>In the case of two vectors of random variables $x$ and $y$, the covariance is a matrix</p>
+
+\[\begin{aligned}
+cov[\mathbf{x},\mathbf{y}] &amp;= \mathbb{E}_{\mathbf{x},\mathbf{y}} [\{\mathbf{x}-\mathbb{E}[\mathbf{x}]\} \{\mathbf{y}^T - \mathbb{E}[\mathbf{y}^T]\}]\\
+&amp;= \mathbb{E}_{\mathbf{x},\mathbf{y}} [\mathbf{x}\mathbf{y}^T] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{y}^T]
+\end{aligned}\]
+
+<h2 id="bayesian">Bayesian</h2>
+
+<p>We refer to above as the <em>classical</em> or <em>frequentist</em> interpretation of probability. Now we turn to a more general <em>Bayesian</em> view, in which probabilities provide a quantification of uncertainty.</p>
+
+\[p(\mathbf{w}|\mathcal{D}) = \frac{p(\mathcal{D}|\mathbf{w})p(\mathbf{w})}{p(\mathcal{D})}\\
+\text{posterior} \propto \text{likelihood} \times \text{prior}\]
+
+<p>The denominator in the Bayes’ theorem is the normalisation constant, which ensures that the posterior
+distribution on the left-hand side is a valid probability desntiy and integrates to one.</p>
+
+<p>In both the Bayesian and frequentist paradigms, the likelihood function $p(\mathcal{D}|\mathbf{w})$ plays a central role.</p>
+<ul>
+  <li>in a <em>frequentist</em> setting, $\mathbf{w}$ is considered to be a fixed parameter, whose value is determined by some form of “estimator”, and error bars on this estimate are obtained by considering the distribution of possible data sets $\mathcal{D}$.
+    <ul>
+      <li>a widely used frequentist estimator is <strong><em>maximum likelihood</em></strong>, in which $\mathbf{w}$ is set to the value that maximises the likelihood function $p(\mathcal{D}|\mathbf{w})$. In the ML literature, the negative log of the likelihood function is called an <strong><em>error function</em></strong>.</li>
+      <li>one approach to determining frequentist error bars is the <strong><em>bootstrap</em></strong>. The statistical accuracy of parameter estimates can be evaluated by looking at the variability of predictions between the different bootstrap data sets (subsets of the original data set that are randomly sampled for $L$ times).</li>
+    </ul>
+  </li>
+  <li>from the <em>Bayesian</em> viewpoint, there is only a single data set $\mathcal{D}$ (the one observed), and the uncertainty in the parameters is expressed through a probability distribution over $\mathbf{w}$.
+    <ul>
+      <li>advantage: the inclusion of prior knowledge arises naturally</li>
+    </ul>
+  </li>
+</ul>
+
+<p>There is no unique frequentist, or even Bayesian, viewpoint.</p>
+
+<h2 id="gaussian">Gaussian</h2>
+
+<p>The <strong><em>normal</em></strong> / <strong><em>Gaussian</em></strong> distribution for a single real-valued variable $x$</p>
+
+\[\mathcal{N}(x|\mu,\sigma^2) = \frac{1}{(2\pi\sigma^2)^{\frac{1}{2}}} exp\{-\frac{1}{2\sigma^2}(x-\mu)^2\}\]
+
+<p>is governed by 2 parameters, $\mu$ called <strong><em>mean</em></strong> and $\sigma^2$ called the <strong><em>variance</em></strong>. Moreover, the
+square root of the variance given by $\sigma$ is called the <strong><em>standard deviation</em></strong>, and the reciprocal of the variance written as $\beta=\frac{1}{\sigma^2}$ is called the <strong><em>precision</em></strong>.</p>
+
+<p>The Gaussian distribution defined over a $D$-dimensional vector $\mathbf{x}$ of continuous variables is given
+by</p>
+
+\[\mathcal{N}(\mathbf{x}|\mathbf{\mu},\mathbf{\Sigma}) = 
+\frac{1}{(2\pi)^{\frac{D}{2}}} \frac{1}{|\mathbf{\Sigma}|^{\frac{1}{2}}}
+exp\{-\frac{1}{2}(\mathbf{x}-\mathbf{\mu})^T \mathbf{\Sigma}^{-1}(\mathbf{x}-\mathbf{\mu})\}\]
+
+<p>where the $D$-dimensional vector $\mathbf{\mu}$ is called the mean, the $D\times D$ matrix $\mathbf{\Sigma}$ 
+is called the covariance, and $|\mathbf{\Sigma}|$ denotes the determinant of $\mathbf{\Sigma}$.</p>
+
+<h3 id="maximum-likelihood-approach">maximum likelihood approach</h3>
+
+<p>We shall determine values for the unknown parameters $\mu$ and $\sigma^2$ in the Gaussian by maximizing the
+likelihood function. In practice, it’s more convenient to maximise the log of the likelihood function.</p>
+
+\[\ln p(\mathbf{X}|\mu,\sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^N (x_N-\mu)^2-\frac{N}{2}\ln\sigma^2-
+\frac{N}{2}\ln(2\pi)\]
+
+<p>Maximising log likelihood above with respect with $\mu$ and $\sigma^2$, we obtain the solution given by</p>
+
+\[\mu_{ML} = \frac{1}{N}\sum_{n=1}^N x_n\\
+\sigma_{ML}^2 = \frac{1}{N}\sum_{n=1}^N (x_n-\mu_{ML})^2\]
+
+<p>Note that $\sigma_{ML}^2$ is the <strong><em>sample variance</em></strong> measured with respect to the sample mean $\mu_{ML}$.</p>
+
+<p><em>Limitations</em>: the maximum likelihood approach systematically underestimates the variance of the 
+distribution. This is an example of a phenomenon called <strong><em>bias</em></strong> and is related to the problem of over-fitting.</p>]]></content><author><name>Jiawen</name><email>hanghur@gmail.com</email></author><category term="machine-learning" /><summary type="html"><![CDATA[Reference: Bishop 1.2]]></summary></entry><entry><title type="html">ML foundations - model &amp;amp; data, polynomial curve fitting</title><link href="jwhhh.github.io/2022/04/17/bishop-1.html" rel="alternate" type="text/html" title="ML foundations - model &amp;amp; data, polynomial curve fitting" /><published>2022-04-17T00:00:00+10:00</published><updated>2022-04-17T00:00:00+10:00</updated><id>jwhhh.github.io/2022/04/17/bishop-1</id><content type="html" xml:base="jwhhh.github.io/2022/04/17/bishop-1.html"><![CDATA[<p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.1, 1.3, 1.4</p>
+
+<h1 id="basic-ml-concepts">Basic ML concepts</h1>
+
+<ul>
+  <li>a large set of N digits ${ x_1, . . . , x_N}$ called a <strong><em>training set</em></strong> is used to tune the parameters of an adaptive model.</li>
+  <li>we can express the category of a digit using <strong><em>target vector t</em></strong>, which represents the identity of the corresponding digit.</li>
+  <li>the result of running the machine learning algorithm can be expressed as a function y(x) which takes a new digit image x as input and that generates an output vector y, encoded in the same way as the target vectors.</li>
+  <li>the precise form of the function y(x) is determined during the <strong><em>training phase</em></strong>, also known as <strong><em>the learning phase</em></strong>, on the basis of the training data.</li>
+  <li>once the model is trained it can then determine the identity of new digit images, which are said to comprise a <strong><em>test set</em></strong>.</li>
+  <li>the ability to categorize correctly new examples that differ from those used for training is known as <strong><em>generalization</em></strong>.</li>
+</ul>
+
+<h2 id="categories">Categories</h2>
+
+<ul>
+  <li>supervised learning: applications in which the training data comprises examples of the input vectors along with their corresponding target vectors</li>
+  <li>unsupervised learning: other pattern recognition problems where the training data consists of a set of input vectors x without any corresponding target values
+    <ul>
+      <li>clustering: to discover groups of similar examples within the data</li>
+      <li>density estimation: to determine the distribution of data within the input space</li>
+      <li>visualisation: to project the data from a high-dimensional space down to two or three dimensions</li>
+    </ul>
+  </li>
+  <li>reinforcement learning: the problem of finding suitable actions to take in a given situation in order to maximize a reward</li>
+</ul>
+
+<h1 id="polynomial-curve-fitting">Polynomial curve fitting</h1>
+
+<h2 id="problem">Problem</h2>
+<p>We shall fit the data using a polynomial function of the form</p>
+
+\[y(x,\mathbf{w}) = w_0 + w_1 x + w_2 x^2 + ... + w_M x^M = \sum_{j=0}^M w_j x^j\]
+
+<p>where $M$ is the order of the polynomial, and $x^j$ denotes $x$ raised to the power of $j$.
+The polynomial coefficients $w_0, …, w_M$ are collectively denoted by the vector $\mathbf{w}$.</p>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p><strong><em>Error function</em></strong> measures the misfit between the function $y(x, \mathbf{w})$, for any given value of
+$\mathbf{w}$, and the training set data points.</p>
+
+<p>One simple choice is given by the sum of the squares of the errors between the predictions $y(x_n,\mathbf{w})$
+for each data point $x_n$ and the corresponding target values $t_n$, so that we minimise</p>
+
+\[E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \{y(x_n, \mathbf{w}) - t_n\}^2\]
+
+<p>where 1/2 is for later convenience.</p>
+
+<p>Since the error function is a quadratic function of the coefficients $\mathbf{w}$, its derivatives
+with respect to the coefficients will be linear in the elements of $\mathbf{w}$, and so the minimisation
+of the error function has a unique solution, denoted by $\mathbf{w^*}$, which can be found in closed form.</p>
+
+<p>The problem of choosing the right order $M$ involves an important concepts called <strong><em>model comparison</em></strong> or
+<strong><em>model selection</em></strong>.</p>
+
+<p>Note that it is sometimes more convenient to use the root-mean-square (RMS) error defined by</p>
+
+\[E_{RMS} = \sqrt {2E(\mathbf{w}^*)/N}\]
+
+<h3 id="when-m-is-changed">when $M$ is changed</h3>
+<p>As $M$ increases, the magnitude of the coefficients typically gets larger.</p>
+
+<h3 id="when-data-size-is-changed">when data size is changed</h3>
+<p>For a given model complexity, the over-fitting problem become less severe as the size of the data set increases.</p>
+
+<p>Another way to say this is that: the larger the data set, the more complex (in other words more flexible) the
+model that we can afford to fit to the data.</p>
+
+<h2 id="regularisation">Regularisation</h2>
+
+<p>One technique to control the over-fitting phenomenon is <strong><em>regularisation</em></strong>, which involves adding a penalty term to
+the error function in order to discourage the coefficients from reaching large values. The simplest example (sum
+of squares of all of the coefficients) leads to a modified error function of the form:</p>
+
+\[\tilde{E}(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N \{y(x_n, \mathbf{w}) - t_n\}^2 + \frac{\lambda}{2} ||\mathbf{w}||^2\]
+
+<p>where $||\mathbf{w}||^2 = \mathbf{w}^T \mathbf{w} = w_0^2 + w_1^2 + … + w_M^2$, and the coefficient $\lambda$ governs
+the relative importance of the regularisation term compared with the sum-of-squares error term.</p>
+
+<p>Techniques such as this are known in the statistics literature as <strong><em>shrinkage</em></strong> methods because they reduce the value
+of the coefficients. The particular case of a quadratic regulariser is called <strong><em>ridge regression</em></strong>. In the context of
+neural networks, this approach is known as <strong><em>weight decay</em></strong>.</p>
+
+<h1 id="model-selection">Model selection</h1>
+
+<ul>
+  <li><em>validation set</em>: the independent set of data used to select one model having the best predictive performance</li>
+  <li><em>test set</em>: a third set of data on which the performance of the selected model is finally evalutated</li>
+  <li><em>cross validation</em>: allows a proportion (S-1)/S of the available data to be used for training while making use of all of the data to assess performance.
+    <ul>
+      <li><em>leave-one-out</em> techinique: S = N, used when data is particularly scarce</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="the-curse-of-dimensionality">The curse of dimensionality</h1>
+
+<p>The severe difficulty that can arise in spaces of many dimensions is sometimes called the curse of dimensionality.</p>]]></content><author><name>Jiawen</name><email>hanghur@gmail.com</email></author><category term="machine-learning" /><summary type="html"><![CDATA[Reference: Bishop 1.1, 1.3, 1.4]]></summary></entry><entry><title type="html">The translator’s guide to Chinglish - :notebook_with_decorative_cover:#1</title><link href="jwhhh.github.io/2022/04/02/chinglish-1.html" rel="alternate" type="text/html" title="The translator’s guide to Chinglish - :notebook_with_decorative_cover:#1" /><published>2022-04-02T00:00:00+11:00</published><updated>2022-04-02T00:00:00+11:00</updated><id>jwhhh.github.io/2022/04/02/chinglish-1</id><content type="html" xml:base="jwhhh.github.io/2022/04/02/chinglish-1.html"><![CDATA[<h1 id="1-unnecessary-words">1. Unnecessary words</h1>
+
+<blockquote>
+  <p>Unnecessary words are the hallmark of Chinglish.</p>
+</blockquote>
+
+<h2 id="i-unnecesary-nouns-and-verbs">I. Unnecesary nouns and verbs</h2>
+
+<h3 id="nouns">Nouns</h3>
+<ul>
+  <li>to accelerate = to increase the pace of
+    <ul>
+      <li>例句中说”to accelerate the pace of”，这第一点非常像我们说“凯旋归来”时犯的错误</li>
+    </ul>
+  </li>
+  <li>“situation” is a particularly dangerous noun; “key” can also sometimes be unnecessary</li>
+  <li>category nouns, e.g. “the work of”, “the cause of”, “a relationship of”, “the practice of”, “cases of”, “the factor of”</li>
+</ul>
+
+<h3 id="verbs">Verbs</h3>
+<ol>
+  <li>unnecessary verb + noun
+    <ul>
+      <li>e.g. “make an improvement” -&gt; “improve”, “accomplish the transform” -&gt; “transform”, “launch an attack” -&gt; “attack”, “realises industrial modernisation” -&gt; “modernises”</li>
+      <li>passive voice, e.g. “an improvement must be made” -&gt; “must be improved”, “approval should be given” -&gt; “should be improved”, “solutions can be found” -&gt; “can be solved”</li>
+    </ul>
+  </li>
+  <li>unnecessary verb + unnecessary noun + third word</li>
+</ol>]]></content><author><name>Jiawen</name><email>hanghur@gmail.com</email></author><category term="English-learning" /><summary type="html"><![CDATA[1. Unnecessary words]]></summary></entry></feed>
