@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="utf-8">
+
+        
+        
+
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/line-awesome/css/line-awesome.min.css"/>
+        <script src="/js/main.js" defer></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                  // customised options
+                  // • auto-render specific keys, e.g.:
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false},
+                      {left: '\\[', right: '\\]', display: true}
+                  ],
+                  // • rendering keys, e.g.:
+                  throwOnError : false
+                });
+            });
+        </script>
+        
+    <title>[ML foundations] model &amp; data, polynomial curve fitting | Nanciee&#x27;s</title>
+
+    </head>
+
+    <body class="bg-white dark:bg-slate-900 transition ease-in-out">
+        <section>
+            
+
+    <div class="sticky top-0 bg-amber-100 dark:bg-slate-800">
+        <div class="container mx-auto flex place-content-between
+        py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900
+        dark:text-slate-300">
+            <div class="flex">
+                
+                
+                    
+                    
+                        <a class="m-0 p-0 text-slate-900 hover:text-slate-700
+                            dark:text-slate-300 dark:hover:text-slate-200"
+                            href="&#x2F;tech&#x2F;">
+                            /tech
+                        </a>
+                    
+                
+                    
+                    
+                    
+                
+            </div>
+            <div class="flex gap-4">
+                <div id="back-to-top" class="hidden cursor-pointer">
+                    <i class="las la-level-up-alt"></i>
+                </div>
+                <a href="/" class="transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <i class="las la-home"></i>
+                </a>
+                
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/tech">
+                            <i class="las la-laptop-code"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/life">
+                            <i class="las la-drum"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/about">
+                            <i class="las la-id-card-alt"></i>
+                        </a>
+                    
+                
+                <div id="darkmode-toggle" class="cursor-pointer transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <div class="hidden dark:inline">
+                        <i class="las la-sun"></i>
+                    </div>
+                    <div class="inline dark:hidden">
+                        <i class="las la-moon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="container mb-32">
+        <div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">
+            2022-04-17
+        </div>
+        <h1 class="w-full mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">
+            [ML foundations] model &amp; data, polynomial curve fitting
+        </h1>
+        <div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div>
+        <div class="prose-boring">
+            <p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.1, 1.3, 1.4</p>
+<h1 id="basic-ml-concepts">Basic ML concepts</h1>
+<ul>
+<li>a large set of N digits ${ x_1, . . . , x_N}$ called a <em><strong>training set</strong></em> is used to tune the parameters of an adaptive model.</li>
+<li>we can express the category of a digit using <em><strong>target vector t</strong></em>, which represents the identity of the corresponding digit.</li>
+<li>the result of running the machine learning algorithm can be expressed as a function y(x) which takes a new digit image x as input and that generates an output vector y, encoded in the same way as the target vectors.</li>
+<li>the precise form of the function y(x) is determined during the <em><strong>training phase</strong></em>, also known as <em><strong>the learning phase</strong></em>, on the basis of the training data. </li>
+<li>once the model is trained it can then determine the identity of new digit images, which are said to comprise a <em><strong>test set</strong></em>.</li>
+<li>the ability to categorize correctly new examples that differ from those used for training is known as <em><strong>generalization</strong></em>.</li>
+</ul>
+<h2 id="categories">Categories</h2>
+<ul>
+<li>supervised learning: applications in which the training data comprises examples of the input vectors along with their corresponding target vectors</li>
+<li>unsupervised learning: other pattern recognition problems where the training data consists of a set of input vectors x without any corresponding target values
+<ul>
+<li>clustering: to discover groups of similar examples within the data</li>
+<li>density estimation: to determine the distribution of data within the input space</li>
+<li>visualisation: to project the data from a high-dimensional space down to two or three dimensions</li>
+</ul>
+</li>
+<li>reinforcement learning: the problem of finding suitable actions to take in a given situation in order to maximize a reward</li>
+</ul>
+<h1 id="polynomial-curve-fitting">Polynomial curve fitting</h1>
+<h2 id="problem">Problem</h2>
+<p>We shall fit the data using a polynomial function of the form</p>
+<p>$$
+y(x,\mathbf{w}) = w_0 + w_1 x + w_2 x^2 + ... + w_M x^M = \sum_{j=0}^M w_j x^j
+$$</p>
+<p>where $M$ is the order of the polynomial, and $x^j$ denotes $x$ raised to the power of $j$.
+The polynomial coefficients $w_0, ..., w_M$ are collectively denoted by the vector $\mathbf{w}$.</p>
+<h2 id="evaluation">Evaluation</h2>
+<p><em><strong>Error function</strong></em> measures the misfit between the function $y(x, \mathbf{w})$, for any given value of
+$\mathbf{w}$, and the training set data points.</p>
+<p>One simple choice is given by the sum of the squares of the errors between the predictions $y(x_n,\mathbf{w})$
+for each data point $x_n$ and the corresponding target values $t_n$, so that we minimise</p>
+<p>$$
+E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N {y(x_n, \mathbf{w}) - t_n}^2
+$$</p>
+<p>where 1/2 is for later convenience.</p>
+<p>Since the error function is a quadratic function of the coefficients $\mathbf{w}$, its derivatives
+with respect to the coefficients will be linear in the elements of $\mathbf{w}$, and so the minimisation
+of the error function has a unique solution, denoted by $\mathbf{w^*}$, which can be found in closed form.</p>
+<p>The problem of choosing the right order $M$ involves an important concepts called <em><strong>model comparison</strong></em> or
+<em><strong>model selection</strong></em>.</p>
+<p>Note that it is sometimes more convenient to use the root-mean-square (RMS) error defined by</p>
+<p>$$
+E_{RMS} = \sqrt {2E(\mathbf{w}^*)/N}
+$$</p>
+<h3 id="when-m-is-changed">when $M$ is changed</h3>
+<p>As $M$ increases, the magnitude of the coefficients typically gets larger.</p>
+<h3 id="when-data-size-is-changed">when data size is changed</h3>
+<p>For a given model complexity, the over-fitting problem become less severe as the size of the data set increases.</p>
+<p>Another way to say this is that: the larger the data set, the more complex (in other words more flexible) the
+model that we can afford to fit to the data.</p>
+<h2 id="regularisation">Regularisation</h2>
+<p>One technique to control the over-fitting phenomenon is <em><strong>regularisation</strong></em>, which involves adding a penalty term to
+the error function in order to discourage the coefficients from reaching large values. The simplest example (sum
+of squares of all of the coefficients) leads to a modified error function of the form:</p>
+<p>$$
+\tilde{E}(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N {y(x_n, \mathbf{w}) - t_n}^2 + \frac{\lambda}{2} ||\mathbf{w}||^2
+$$</p>
+<p>where $||\mathbf{w}||^2 = \mathbf{w}^T \mathbf{w} = w_0^2 + w_1^2 + ... + w_M^2$, and the coefficient $\lambda$ governs
+the relative importance of the regularisation term compared with the sum-of-squares error term.</p>
+<p>Techniques such as this are known in the statistics literature as <em><strong>shrinkage</strong></em> methods because they reduce the value
+of the coefficients. The particular case of a quadratic regulariser is called <em><strong>ridge regression</strong></em>. In the context of
+neural networks, this approach is known as <em><strong>weight decay</strong></em>.</p>
+<h1 id="model-selection">Model selection</h1>
+<ul>
+<li><em>validation set</em>: the independent set of data used to select one model having the best predictive performance</li>
+<li><em>test set</em>: a third set of data on which the performance of the selected model is finally evalutated</li>
+<li><em>cross validation</em>: allows a proportion (S-1)/S of the available data to be used for training while making use of all of the data to assess performance.
+<ul>
+<li><em>leave-one-out</em> techinique: S = N, used when data is particularly scarce</li>
+</ul>
+</li>
+</ul>
+<h1 id="the-curse-of-dimensionality">The curse of dimensionality</h1>
+<p>The severe difficulty that can arise in spaces of many dimensions is sometimes called the curse of dimensionality.</p>
+
+        </div>
+    </div>
+    
+    <div class="fixed inset-x-9=0 bottom-0 w-full text-center py-2 bg-amber-100 dark:bg-slate-800">
+        <div class="container text-center font-sans text-xl xl:text-base 
+            text-gray-600 dark:text-slate-500">
+            <div>&copy; Nanciee's 2021-2024, 
+                powered by <a href="https://www.getzola.org">Zola</a> & <a href="https://github.com/ssiyad/boring">Boring</a>
+            </div>
+                        
+                <div class="text-3xl xl:text-2xl flex gap-2 justify-center
+                            xl:justify-center">
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;github.com&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-github"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;alive.bar&#x2F;@jwhhh" target="_blank">
+                            <i class="lab la-mastodon"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-linkedin"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;www.instagram.com&#x2F;nanciee.h&#x2F;" target="_blank">
+                            <i class="lab la-instagram"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="&#x2F;Nancy_CV_2024.pdf" target="_blank">
+                            <i class="las la-id-card"></i>
+                        </a>
+                        </div>
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+        </section>
+    </body>
+</html>

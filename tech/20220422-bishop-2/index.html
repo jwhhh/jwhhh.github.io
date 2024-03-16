@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="utf-8">
+
+        
+        
+
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/line-awesome/css/line-awesome.min.css"/>
+        <script src="/js/main.js" defer></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                  // customised options
+                  // • auto-render specific keys, e.g.:
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false},
+                      {left: '\\[', right: '\\]', display: true}
+                  ],
+                  // • rendering keys, e.g.:
+                  throwOnError : false
+                });
+            });
+        </script>
+        
+    <title>[ML foundations] probability theory, maximum likelihood | Nanciee&#x27;s</title>
+
+    </head>
+
+    <body class="bg-white dark:bg-slate-900 transition ease-in-out">
+        <section>
+            
+
+    <div class="sticky top-0 bg-amber-100 dark:bg-slate-800">
+        <div class="container mx-auto flex place-content-between
+        py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900
+        dark:text-slate-300">
+            <div class="flex">
+                
+                
+                    
+                    
+                        <a class="m-0 p-0 text-slate-900 hover:text-slate-700
+                            dark:text-slate-300 dark:hover:text-slate-200"
+                            href="&#x2F;tech&#x2F;">
+                            /tech
+                        </a>
+                    
+                
+                    
+                    
+                    
+                
+            </div>
+            <div class="flex gap-4">
+                <div id="back-to-top" class="hidden cursor-pointer">
+                    <i class="las la-level-up-alt"></i>
+                </div>
+                <a href="/" class="transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <i class="las la-home"></i>
+                </a>
+                
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/tech">
+                            <i class="las la-laptop-code"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/life">
+                            <i class="las la-drum"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/about">
+                            <i class="las la-id-card-alt"></i>
+                        </a>
+                    
+                
+                <div id="darkmode-toggle" class="cursor-pointer transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <div class="hidden dark:inline">
+                        <i class="las la-sun"></i>
+                    </div>
+                    <div class="inline dark:hidden">
+                        <i class="las la-moon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="container mb-32">
+        <div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">
+            2022-04-22
+        </div>
+        <h1 class="w-full mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">
+            [ML foundations] probability theory, maximum likelihood
+        </h1>
+        <div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div>
+        <div class="prose-boring">
+            <p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.2</p>
+<h1 id="probability-theory">Probability theory</h1>
+<blockquote>
+<p>Probability provides a consistent framework for the quantification and manipulation of uncertainty and forms one of
+the central foundations for pattern recognition.</p>
+</blockquote>
+<h2 id="densities">Densities</h2>
+<h3 id="discrete-variables">Discrete variables</h3>
+<p>(skipping quick intro of <em>probability</em>, <em>sum rule</em>, <em>product rule</em>, <em>joint probability</em>, <em>marginal probability</em>, 
+<em>conditional probability</em>, <em>Bayes' theorem</em>, <em>prior probability</em>, <em>posterior probability</em>, <em>independent</em>)</p>
+<p>Note that if $x$ is a discrete variable, then $p(x)$ is sometimes called a <em><strong>probability mass function</strong></em> because
+it can be regarded as a set of &quot;probability masses&quot; concentrated at the allowed values of $x$.</p>
+<h3 id="continuous-variables">Continuous variables</h3>
+<p>If a probability of a real-valued variable $x$ falling in the interval $(x, x+\delta x)$ is given by $p(x)\delta x$ for 
+$\delta x \rightarrow 0$, then $p(x)$ is called the <em><strong>probability density</strong></em> over $x$.</p>
+<p>The probability that $x$ will lie in an interval $(a,b)$ is then given by </p>
+<p>$$
+p(x\in (a,b)) = \int_a^b p(x) dx
+$$</p>
+<p>The cummulative distribution function is defined by the probability that $x$ lies in the interval $(-\infty,z)$:</p>
+<p>$$
+P(z) = \int_{-\infty}^z p(x) dx
+$$</p>
+<p>which satisfies $P'(x) = p(x)$.</p>
+<p>The sum and product rules of probability, as well as Bayes' theorem, apply equally to the case of probability densities,
+or to combinations of discrete and continuous variables.</p>
+<h4 id="nonlinear-change-of-variable">nonlinear change of variable</h4>
+<p>Under a <em>nonlinear change of variable</em>, a probability density transforms differently from a simple function, due to the
+Jacobian factor. For instance, if we consider a chnage of variables $x=g(y)$, then a function $f(x)$ becomes
+$\tilde{f}(y)=f(g(y))$. Now consider a probability density $p_x(x)$ that corresponds to a density $p_y(y)$ with respect
+to the new variable $y$, where the suffices denote the fact that $p_x(x)$ and $p_y(y)$ are different densities.
+Observations falling in the range $(x,x+\delta x)$ will, for small values of $\delta x$, be transformed into the range
+$(y,y+\delta y)$ where $p_x(x)\delta x \simeq p_y(y)\delta y$, and hence</p>
+<p>$$
+p_y(y) = p_x(x)|\frac{dx}{dy}| = p_x(g(y))|g'(y)|
+$$</p>
+<p>One consequence of this property is that the concept of the maximum of a probability density is dependent on the choice 
+of variable.</p>
+<h2 id="e-cov">E &amp; cov</h2>
+<p>For a discrete distribution, $\mathbb{E}[f]=\sum_x p(x)f(x)$.</p>
+<p>For a continuous distribution, $\mathbb{E}[f]=\int p(x)f(x)dx$.</p>
+<p>In either case, if we are given a finite number $N$ of points drawn from the probability distribution or probability density,
+then the expectation can be approximated as a finite sum over these points, 
+$\mathbb{E}[f]\simeq \frac{1}{N}\sum_{n=1}^N f(x_n)$.</p>
+<p>$\mathbb{E}_x[f(x,y)]$ denotes the average of the function $f(x,y)$ with respect to the distribution of $x$.
+Note that this will be a function of $y$.</p>
+<p>For <em>conditional expectation</em>, $\mathbb{E}_x[f|y]=\sum_x p(x|y)f(x)$ for discrete variables, 
+and $\mathbb{E}_x[f|y]=\int_x p(x|y)f(x)$ for continuous variables.</p>
+<p>The <em><strong>variance</strong></em> of $f(x)$ is defined by</p>
+<p>$$
+\begin{aligned}
+var[f] &amp;= \mathbb{E}[(f(x)-\mathbb[f(x)])^2] \
+&amp;= \mathbb{E}[f(x)^2] - \mathbb{E}[f(x)]^2
+\end{aligned}
+$$</p>
+<p>and provides a measure of how much variability there is in $f(x)$ around its mean value $\mathbb{E}[f(x)]$.</p>
+<p>If we consider the variance of the variable $x$ itself, then it's $var[x]=\mathbb{E}[x^2]-\mathbb{E}[x]^2$.</p>
+<p>For two random variables $x$ and $y$, the <em><strong>covariance</strong></em> is defined by</p>
+<p>$$
+\begin{aligned}
+cov[x,y] &amp;= \mathbb{E}_{x,y} [{x-\mathbb{E}[x]} {y-\mathbb{E}[y]}]\
+&amp;= \mathbb{E}[xy]-\mathbb{E}[x]\mathbb{E}[y]
+\end{aligned}
+$$</p>
+<p>which expresses the extent to which $x$ and $y$ vary together. If $x$ and $y$ are independent, then their covariance vanishes.</p>
+<p>In the case of two vectors of random variables $x$ and $y$, the covariance is a matrix</p>
+<p>$$
+\begin{aligned}
+cov[\mathbf{x},\mathbf{y}] &amp;= \mathbb{E}<em>{\mathbf{x},\mathbf{y}} [{\mathbf{x}-\mathbb{E}[\mathbf{x}]} {\mathbf{y}^T - \mathbb{E}[\mathbf{y}^T]}]\
+&amp;= \mathbb{E}</em>{\mathbf{x},\mathbf{y}} [\mathbf{x}\mathbf{y}^T] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{y}^T]
+\end{aligned}
+$$</p>
+<h2 id="bayesian">Bayesian</h2>
+<p>We refer to above as the <em>classical</em> or <em>frequentist</em> interpretation of probability. Now we turn to a more general <em>Bayesian</em> view, in which probabilities provide a quantification of uncertainty.</p>
+<p>$$
+p(\mathbf{w}|\mathcal{D}) = \frac{p(\mathcal{D}|\mathbf{w})p(\mathbf{w})}{p(\mathcal{D})}\
+\text{posterior} \propto \text{likelihood} \times \text{prior}
+$$</p>
+<p>The denominator in the Bayes' theorem is the normalisation constant, which ensures that the posterior
+distribution on the left-hand side is a valid probability desntiy and integrates to one.</p>
+<p>In both the Bayesian and frequentist paradigms, the likelihood function $p(\mathcal{D}|\mathbf{w})$ plays a central role.</p>
+<ul>
+<li>in a <em>frequentist</em> setting, $\mathbf{w}$ is considered to be a fixed parameter, whose value is determined by some form of &quot;estimator&quot;, and error bars on this estimate are obtained by considering the distribution of possible data sets $\mathcal{D}$.
+<ul>
+<li>a widely used frequentist estimator is <em><strong>maximum likelihood</strong></em>, in which $\mathbf{w}$ is set to the value that maximises the likelihood function $p(\mathcal{D}|\mathbf{w})$. In the ML literature, the negative log of the likelihood function is called an <em><strong>error function</strong></em>.</li>
+<li>one approach to determining frequentist error bars is the <em><strong>bootstrap</strong></em>. The statistical accuracy of parameter estimates can be evaluated by looking at the variability of predictions between the different bootstrap data sets (subsets of the original data set that are randomly sampled for $L$ times).</li>
+</ul>
+</li>
+<li>from the <em>Bayesian</em> viewpoint, there is only a single data set $\mathcal{D}$ (the one observed), and the uncertainty in the parameters is expressed through a probability distribution over $\mathbf{w}$.
+<ul>
+<li>advantage: the inclusion of prior knowledge arises naturally</li>
+</ul>
+</li>
+</ul>
+<p>There is no unique frequentist, or even Bayesian, viewpoint.</p>
+<h2 id="gaussian">Gaussian</h2>
+<p>The <em><strong>normal</strong></em> / <em><strong>Gaussian</strong></em> distribution for a single real-valued variable $x$</p>
+<p>$$
+\mathcal{N}(x|\mu,\sigma^2) = \frac{1}{(2\pi\sigma^2)^{\frac{1}{2}}} exp{-\frac{1}{2\sigma^2}(x-\mu)^2}
+$$</p>
+<p>is governed by 2 parameters, $\mu$ called <em><strong>mean</strong></em> and $\sigma^2$ called the <em><strong>variance</strong></em>. Moreover, the
+square root of the variance given by $\sigma$ is called the <em><strong>standard deviation</strong></em>, and the reciprocal of the variance written as $\beta=\frac{1}{\sigma^2}$ is called the <em><strong>precision</strong></em>.</p>
+<p>The Gaussian distribution defined over a $D$-dimensional vector $\mathbf{x}$ of continuous variables is given
+by</p>
+<p>$$
+\mathcal{N}(\mathbf{x}|\mathbf{\mu},\mathbf{\Sigma}) = 
+\frac{1}{(2\pi)^{\frac{D}{2}}} \frac{1}{|\mathbf{\Sigma}|^{\frac{1}{2}}}
+exp{-\frac{1}{2}(\mathbf{x}-\mathbf{\mu})^T \mathbf{\Sigma}^{-1}(\mathbf{x}-\mathbf{\mu})}
+$$</p>
+<p>where the $D$-dimensional vector $\mathbf{\mu}$ is called the mean, the $D\times D$ matrix $\mathbf{\Sigma}$ 
+is called the covariance, and $|\mathbf{\Sigma}|$ denotes the determinant of $\mathbf{\Sigma}$.</p>
+<h3 id="maximum-likelihood-approach">maximum likelihood approach</h3>
+<p>We shall determine values for the unknown parameters $\mu$ and $\sigma^2$ in the Gaussian by maximizing the
+likelihood function. In practice, it's more convenient to maximise the log of the likelihood function.</p>
+<p>$$
+\ln p(\mathbf{X}|\mu,\sigma^2) = -\frac{1}{2\sigma^2} \sum_{n=1}^N (x_N-\mu)^2-\frac{N}{2}\ln\sigma^2-
+\frac{N}{2}\ln(2\pi)
+$$</p>
+<p>Maximising log likelihood above with respect with $\mu$ and $\sigma^2$, we obtain the solution given by</p>
+<p>$$
+\mu_{ML} = \frac{1}{N}\sum_{n=1}^N x_n\
+\sigma_{ML}^2 = \frac{1}{N}\sum_{n=1}^N (x_n-\mu_{ML})^2
+$$</p>
+<p>Note that $\sigma_{ML}^2$ is the <em><strong>sample variance</strong></em> measured with respect to the sample mean $\mu_{ML}$.</p>
+<p><em>Limitations</em>: the maximum likelihood approach systematically underestimates the variance of the 
+distribution. This is an example of a phenomenon called <em><strong>bias</strong></em> and is related to the problem of over-fitting.</p>
+
+        </div>
+    </div>
+    
+    <div class="fixed inset-x-9=0 bottom-0 w-full text-center py-2 bg-amber-100 dark:bg-slate-800">
+        <div class="container text-center font-sans text-xl xl:text-base 
+            text-gray-600 dark:text-slate-500">
+            <div>&copy; Nanciee's 2021-2024, 
+                powered by <a href="https://www.getzola.org">Zola</a> & <a href="https://github.com/ssiyad/boring">Boring</a>
+            </div>
+                        
+                <div class="text-3xl xl:text-2xl flex gap-2 justify-center
+                            xl:justify-center">
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;github.com&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-github"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;alive.bar&#x2F;@jwhhh" target="_blank">
+                            <i class="lab la-mastodon"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-linkedin"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;www.instagram.com&#x2F;nanciee.h&#x2F;" target="_blank">
+                            <i class="lab la-instagram"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="&#x2F;Nancy_CV_2024.pdf" target="_blank">
+                            <i class="las la-id-card"></i>
+                        </a>
+                        </div>
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+        </section>
+    </body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <head>
+        <meta charset="utf-8">
+
+        
+        
+
+        <link rel="stylesheet" href="/css/style.css"/>
+        <link rel="stylesheet" href="/line-awesome/css/line-awesome.min.css"/>
+        <script src="/js/main.js" defer></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" integrity="sha384-cpW21h6RZv/phavutF+AuVYrr+dA8xD9zs6FwLpaCct6O9ctzYFfFr4dgmgccOTx" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                renderMathInElement(document.body, {
+                  // customised options
+                  // • auto-render specific keys, e.g.:
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false},
+                      {left: '\\[', right: '\\]', display: true}
+                  ],
+                  // • rendering keys, e.g.:
+                  throwOnError : false
+                });
+            });
+        </script>
+        
+    <title>[ML foundations] decision theory | Nanciee&#x27;s</title>
+
+    </head>
+
+    <body class="bg-white dark:bg-slate-900 transition ease-in-out">
+        <section>
+            
+
+    <div class="sticky top-0 bg-amber-100 dark:bg-slate-800">
+        <div class="container mx-auto flex place-content-between
+        py-16 xl:py-8 font-sans text-6xl xl:text-2xl text-slate-900
+        dark:text-slate-300">
+            <div class="flex">
+                
+                
+                    
+                    
+                        <a class="m-0 p-0 text-slate-900 hover:text-slate-700
+                            dark:text-slate-300 dark:hover:text-slate-200"
+                            href="&#x2F;tech&#x2F;">
+                            /tech
+                        </a>
+                    
+                
+                    
+                    
+                    
+                
+            </div>
+            <div class="flex gap-4">
+                <div id="back-to-top" class="hidden cursor-pointer">
+                    <i class="las la-level-up-alt"></i>
+                </div>
+                <a href="/" class="transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <i class="las la-home"></i>
+                </a>
+                
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/tech">
+                            <i class="las la-laptop-code"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/life">
+                            <i class="las la-drum"></i>
+                        </a>
+                    
+                        <a class="cursor-pointer transition
+                        text-gray-600 hover:text-orange-200 
+                        dark:text-slate-500 dark:hover:text-slate-400"
+                            href="/about">
+                            <i class="las la-id-card-alt"></i>
+                        </a>
+                    
+                
+                <div id="darkmode-toggle" class="cursor-pointer transition
+                    text-gray-600 hover:text-orange-200 
+                    dark:text-slate-500 dark:hover:text-slate-400">
+                    <div class="hidden dark:inline">
+                        <i class="las la-sun"></i>
+                    </div>
+                    <div class="inline dark:hidden">
+                        <i class="las la-moon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="container mb-32">
+        <div class="mt-4 font-serif text-slate-600 dark:text-slate-500 text-4xl xl:text-base">
+            2022-05-22
+        </div>
+        <h1 class="w-full mt-4 mb-8 font-serif text-8xl xl:text-4xl text-slate-900 dark:text-slate-300">
+            [ML foundations] decision theory
+        </h1>
+        <div class="w-100 border-t mb-8 border-slate-300 dark:border-slate-700"></div>
+        <div class="prose-boring">
+            <p>Reference: <a href="https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/">Bishop</a> 1.5</p>
+<h1 id="decision-theory">Decision theory</h1>
+<h2 id="basic-concepts">Basic concepts</h2>
+<p>Consider an input vector x, corresponding target variables t, with our goal to predict t given a new value for x.</p>
+<p>The joint probability distribution $p(\textbf{x},\textbf{t})$ provides a complete summary
+of the uncertainty associated with these variables. Determination of $p(\textbf{x},\textbf{t})$ from a set of training data is an example of <strong>inference</strong>.</p>
+<p>In a practical application, we must often make a specific prediction for the value of $\textbf{t}$, or more generally take a specific action based on our understanding of the values $\textbf{t}$ is likely to take, and this aspect is the subject of <strong>decision theory</strong>.</p>
+<ul>
+<li><strong>Decision regions</strong>: regions $R_k$ that are divided from the input space according to some rules</li>
+<li><strong>Decision boundaries</strong> (or <strong>decision surfaces</strong>): the boundaries between decision regions</li>
+</ul>
+<h2 id="how">How?</h2>
+<h3 id="minimising-the-misclassification-rate">Minimising the misclassification rate:</h3>
+<p>$$p(\text{mistake}) = p(\textbf{x}\in \mathcal{R}_1, \mathcal{C}_2) + p(\textbf{x}\in \mathcal{R}_2, \mathcal{C}<em>1)\
+=\int</em>{\mathcal{R}_1} p(\mathbf{x},\mathcal{C}<em>2)d\mathbf{x} + \int</em>{\mathcal{R}_2} p(\mathbf{x},\mathcal{C}_1)d\mathbf{x}$$</p>
+<p>Or, maximising the probability of being correct:</p>
+<p>$$p(\text{correct}) = \sum_{k=1}^K p(\mathbf{x}\in \mathcal{R}<em>k, \mathcal{C}<em>k)\
+= \sum</em>{k=1}^K \int</em>{\mathcal{R}_k} p(\mathbf{x},\mathcal{C}_k)d\mathbf{x}$$</p>
+<p>The above two are both equivalent to maximising the posterior probability 
+$p(\mathcal{C}_k|\mathbf{x})$.</p>
+<h3 id="minimising-the-expected-loss">Minimising the expected loss</h3>
+<p><strong>loss function</strong> / <strong>cost function</strong>: a single, overall measure of loss
+incurred in taking any of the available decisions or actions. Our goal is 
+to minimise it.</p>
+<p><strong>utility function</strong> (alternatively): a similar evaluation, which is aimed
+to maximise.</p>
+<p><strong>loss matrix</strong>: we denote some level of loss $L_{kj}$ as the $k$, $j$ 
+element of the loss matrix.</p>
+<p>We seek to minimise the average loss, where the average is computed with
+respect to the joint distribution ($p(\textbf{x}, \mathcal{C}_k)$),</p>
+<p>$$
+\mathbb{E}[L] = \sum_k \sum_j \int_{\mathcal{R}<em>j} L</em>{kj} p(\mathbf{x},\mathcal{C}_k)d\mathbf{x}
+$$</p>
+<p>Our goal is to choose the regions $\mathcal{R}_j$ that minimise the expected
+loss above. And this can then be eliminated to the problem of minimising the 
+quantity</p>
+<p>$$
+\sum_k L_{kj} p(\mathcal{C}_k|\mathbf{x})
+$$</p>
+<h2 id="reject-option">Reject option</h2>
+<p>It's appropriate to avoid making decisions on the difficult cases. So such
+a mechanism &quot;reject option&quot; is necessary. This can be achieved by 
+introducing a threshdld $\theta$ and rejecting those inputs $\mathbf{x}$ for
+which the largest of the posterior probabilities 
+$p(\mathcal{C}_k|\mathbf{x})$ is less than or equal to $\theta$.</p>
+
+        </div>
+    </div>
+    
+    <div class="fixed inset-x-9=0 bottom-0 w-full text-center py-2 bg-amber-100 dark:bg-slate-800">
+        <div class="container text-center font-sans text-xl xl:text-base 
+            text-gray-600 dark:text-slate-500">
+            <div>&copy; Nanciee's 2021-2024, 
+                powered by <a href="https://www.getzola.org">Zola</a> & <a href="https://github.com/ssiyad/boring">Boring</a>
+            </div>
+                        
+                <div class="text-3xl xl:text-2xl flex gap-2 justify-center
+                            xl:justify-center">
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;github.com&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-github"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;alive.bar&#x2F;@jwhhh" target="_blank">
+                            <i class="lab la-mastodon"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;jwhhh" target="_blank">
+                            <i class="lab la-linkedin"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="https:&#x2F;&#x2F;www.instagram.com&#x2F;nanciee.h&#x2F;" target="_blank">
+                            <i class="lab la-instagram"></i>
+                        </a>
+                        </div>
+                    
+                        <div class="text-gray-500 hover:text-gray-700 transition">
+                        <a href="&#x2F;Nancy_CV_2024.pdf" target="_blank">
+                            <i class="las la-id-card"></i>
+                        </a>
+                        </div>
+                    
+                </div>
+            
+        </div>
+    </div>
+
+
+        </section>
+    </body>
+</html>
